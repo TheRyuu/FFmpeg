@@ -36,8 +36,13 @@ static inline uint64_t read_time(void)
 
 #elif HAVE_RDTSC
 
-#include <intrin.h>
-#define AV_READ_TIME __rdtsc
+#if defined(__INTEL_COMPILER)
+#   include <immintrin.h>
+#   define AV_READ_TIME _rdtsc
+#else
+#   include <intrin.h>
+#   define AV_READ_TIME __rdtsc
+#endif
 
 #endif /* HAVE_INLINE_ASM */
 
