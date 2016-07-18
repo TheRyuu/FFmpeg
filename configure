@@ -366,6 +366,7 @@ Toolchain options:
   --enable-pic             build position-independent code
   --enable-thumb           compile for Thumb instruction set
   --enable-lto             use link-time optimization
+  --enable-control-flow-guard use Window's Control Flow Guard (CFG) security mitigation
   --env="ENV=override"     override the environment variables
 
 Advanced options (experts only):
@@ -2116,6 +2117,7 @@ CMDLINE_SELECT="
     $HAVE_LIST_CMDLINE
     $THREADS_LIST
     asm
+    control_flow_guard
     cross_compile
     debug
     extra_warnings
@@ -6214,6 +6216,12 @@ EOF
     # this flag should be re-checked on newer compiler releases and put under a
     # version check once its fixed
     check_cflags -d2SSAOptimizer-
+    # Control Flow Guard support.  Currently hidden behind a flag since it can impact performance.
+    # Should consider enabling it by default if the performance impact is negligible.
+    if enabled control_flow_guard; then
+        check_cflags  -guard=cf
+        check_ldflags -guard=cf
+    fi
 fi
 
 for pfx in "" host_; do
